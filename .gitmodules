@@ -1,0 +1,6 @@
+[submodule "homelab_ansible_playbooks"]
+	path = homelab_ansible_playbooks
+	url = https://gitea.tilhouse.duckdns.org/telemc/homelab_ansible_playbooks.git
+[submodule "homelab_terraform_configs"]
+	path = homelab_terraform_configs
+	url = https://gitea.tilhouse.duckdns.org/telemc/homelab_terraform_configs.git
