@@ -1,34 +1,64 @@
 pipeline {
     agent { label 'control_node_agent0' }
 
-        environment {
-        TF_VAR_ci_username       = ''
-        TF_VAR_ci_password       = ''
-        TF_VAR_pm_api_endpoint   = ''
-        TF_VAR_pm_api_token      = ''
-        TF_VAR_node_public_key   = ''
-        TF_VAR_MacBook_public_key = ''
+    tools {
+        terraform 'Terraform_1.12.2'
+        ansible  'Ansible_2.14.18'
+    }
+
+    environment {
+        TF_VAR_ci_username             = ''
+        TF_VAR_ci_password             = ''
+        TF_VAR_pm_api_endpoint         = ''
+        TF_VAR_pm_api_token            = ''
+        TF_VAR_ssh_ansible_public_key  = ''
+        TF_VAR_ssh_auxilery_public_key = ''
+    }
+
+    stages {
+        stage('Generate SSH Key Pair') {
+            steps {
+                script {
+                    def sshDir = "${env.WORKSPACE}/.ssh"
+                    def privateKeyPath = "${sshDir}/id_rsa"
+                    def publicKeyPath  = "${sshDir}/id_rsa.pub"
+
+                    // Create .ssh directory and generate SSH key
+                    sh """
+                        mkdir -p ${sshDir}
+                        ssh-keygen -t rsa -b 4096 -f ${privateKeyPath} -N ''
+                    """
+
+                    // Read keys and set environment variable
+                    def publicKey = readFile(publicKeyPath).trim()
+                    def privateKey = readFile(privateKeyPath).trim()
+
+                    env.TF_VAR_ssh_ansible_public_key = publicKey
+                    env.ANSIBLE_PRIVATE_KEY = privateKey
+                    env.ANSIBLE_PRIVATE_KEY_PATH = privateKeyPath
+
+                    // Secure file permission
+                    sh "chmod 600 ${privateKeyPath}"
+                }
+            }
         }
 
-        stages {
-            stage('Setup Terraform Env') {
-                steps {
-                    script {
+        stage('Setup Terraform Env') {
+            steps {
+                script {
                     withCredentials([
                         string(credentialsId: 'ci_username',         variable: 'TF_VAR_ci_username'),
                         string(credentialsId: 'ci_password',         variable: 'TF_VAR_ci_password'),
                         string(credentialsId: 'pm_api_endpoint',     variable: 'TF_VAR_pm_api_endpoint'),
                         string(credentialsId: 'pm_api_token',        variable: 'TF_VAR_pm_api_token'),
-                        string(credentialsId: 'node_public_key',     variable: 'TF_VAR_node_public_key'),
-                        string(credentialsId: 'MacBook_public_key',  variable: 'TF_VAR_MacBook_public_key')
+                        string(credentialsId: 'MacBook_public_key',  variable: 'TF_VAR_ssh_auxilery_public_key')
                     ]) {
-                        // Environment vars are now available for later stages
                         echo "Terraform credentials set"
                     }
                 }
             }
         }
-        
+
         stage('[Terraform] Init & Plan') {
             steps {
                 dir('homelab_terraform_configs/create_k3s_cluster') {
@@ -58,18 +88,25 @@ pipeline {
 
         stage('[Ansible] Provisioning') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ansible_ssh_key', keyFileVariable: 'SSH_KEY_FILE', usernameVariable: 'SSH_USER')]) {
-                    dir('homelab_ansible_playbooks') {
-                        sh '''
-                          chmod 600 "$SSH_KEY_FILE"
-                          ansible-playbook k3s_cluster/playbooks/setup_vms.yaml \
-                            --private-key "$SSH_KEY_FILE" \
-                            -u "$SSH_USER" \
-                            --ask-vault-pass
-                        '''
+                dir('homelab_ansible_playbooks') {
+                    script {
+                        def keyPath = "${env.WORKSPACE}/.ssh/id_rsa"
+                        writeFile file: keyPath, text: env.ANSIBLE_PRIVATE_KEY
+                        sh "chmod 600 ${keyPath}"
+
+                        sh """
+                            ansible-playbook k3s_cluster/playbooks/setup_vms.yaml \
+                            --private-key "${keyPath}" \
+                        """
                     }
                 }
             }
+        }
+    }
+
+    post {
+        cleanup {
+            sh 'rm -rf ${WORKSPACE}/.ssh'
         }
     }
 }
