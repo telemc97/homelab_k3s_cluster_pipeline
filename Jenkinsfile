@@ -1,11 +1,6 @@
 pipeline {
     agent { label 'control_node_agent0' }
 
-    tools {
-        terraform 'Terraform_1.12.2'
-        ansible  'Ansible_2.14.18'
-    }
-
     environment {
         TF_VAR_ci_username             = ''
         TF_VAR_ci_password             = ''
