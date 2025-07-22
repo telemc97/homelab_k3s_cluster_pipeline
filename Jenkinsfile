@@ -62,7 +62,6 @@ pipeline {
                         terraform plan \
                         -out=tfplan \
                         -var-file=../common/global_variables.tfvars \
-                        -var-file=../common/secrets.tfvars
                     '''
                 }
             }
@@ -75,7 +74,6 @@ pipeline {
                         terraform apply \
                         -auto-approve tfplan \
                         -var-file=../common/global_variables.tfvars \
-                        -var-file=../common/secrets.tfvars
                     '''
                 }
             }
