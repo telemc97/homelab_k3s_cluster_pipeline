@@ -42,11 +42,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        string(credentialsId: 'ci_username',         variable: 'TF_VAR_ci_username'),
-                        string(credentialsId: 'ci_password',         variable: 'TF_VAR_ci_password'),
-                        string(credentialsId: 'pm_api_endpoint',     variable: 'TF_VAR_pm_api_endpoint'),
-                        string(credentialsId: 'pm_api_token',        variable: 'TF_VAR_pm_api_token'),
-                        string(credentialsId: 'MacBook_public_key',  variable: 'TF_VAR_ssh_auxilery_public_key')
+                        string(credentialsId: 'ci_username', variable: 'TF_VAR_ci_username'),
+                        string(credentialsId: 'ci_password', variable: 'TF_VAR_ci_password'),
+                        string(credentialsId: 'pm_api_endpoint', variable: 'TF_VAR_pm_api_endpoint'),
+                        string(credentialsId: 'pm_api_token', variable: 'TF_VAR_pm_api_token'),
+                        string(credentialsId: 'ssh_auxilery_public_key', variable: 'TF_VAR_ssh_auxilery_public_key')
                     ]) {
                         echo "Terraform credentials set"
                     }
