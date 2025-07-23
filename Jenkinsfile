@@ -6,12 +6,12 @@ pipeline {
     }
 
     environment {
-        TF_VAR_ci_username             = ''
-        TF_VAR_ci_password             = ''
-        TF_VAR_pm_api_endpoint         = ''
-        TF_VAR_pm_api_token            = ''
-        TF_VAR_ssh_ansible_public_key  = ''
-        TF_VAR_ssh_auxilery_public_key = ''
+        env.TF_VAR_ci_username             = ''
+        env.TF_VAR_ci_password             = ''
+        env.TF_VAR_pm_api_endpoint         = ''
+        env.TF_VAR_pm_api_token            = ''
+        env.TF_VAR_ssh_ansible_public_key  = ''
+        env.TF_VAR_ssh_auxilery_public_key = ''
     }
 
     stages {
