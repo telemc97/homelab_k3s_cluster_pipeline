@@ -1,19 +1,6 @@
 pipeline {
     agent { label 'control_node_agent0' }
 
-    parameters {
-        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace before build')
-    }
-
-    environment {
-        env.TF_VAR_ci_username             = ''
-        env.TF_VAR_ci_password             = ''
-        env.TF_VAR_pm_api_endpoint         = ''
-        env.TF_VAR_pm_api_token            = ''
-        env.TF_VAR_ssh_ansible_public_key  = ''
-        env.TF_VAR_ssh_auxilery_public_key = ''
-    }
-
     stages {
 
         stage('Clean and Init Submodules') {
@@ -63,36 +50,23 @@ pipeline {
             }
         }
 
-        stage('Setup Terraform Env') {
-            steps {
-                script {
-                    withCredentials([
-                        string(credentialsId: 'ci_username',             variable: 'CI_USERNAME'),
-                        string(credentialsId: 'ci_password',             variable: 'CI_PASSWORD'),
-                        string(credentialsId: 'pm_api_endpoint',         variable: 'PM_API_ENDPOINT'),
-                        string(credentialsId: 'pm_api_token',            variable: 'PM_API_TOKEN'),
-                        string(credentialsId: 'ssh_auxilery_public_key', variable: 'AUX_SSH_PUBKEY'),
-                    ]) {
-                        // Set them as real environment vars
-                        env.TF_VAR_ci_username             = CI_USERNAME
-                        env.TF_VAR_ci_password             = CI_PASSWORD
-                        env.TF_VAR_pm_api_endpoint         = PM_API_ENDPOINT
-                        env.TF_VAR_pm_api_token            = PM_API_TOKEN
-                        env.TF_VAR_ssh_auxilery_public_key = AUX_SSH_PUBKEY
-                    }
-                }
-            }
-        }
-
         stage('[Terraform] Init & Plan') {
             steps {
                 dir('homelab_terraform_configs/create_k3s_cluster') {
-                    sh 'terraform init'
-                    sh '''
-                        terraform plan \
-                        -out=tfplan \
-                        -var-file=../common/global_variables.tfvars \
-                    '''
+                    withCredentials([
+                        string(credentialsId: 'ci_username',             variable: 'TF_VAR_ci_username'),
+                        string(credentialsId: 'ci_password',             variable: 'TF_VAR_ci_password'),
+                        string(credentialsId: 'pm_api_endpoint',         variable: 'TF_VAR_pm_api_endpoint'),
+                        string(credentialsId: 'pm_api_token',            variable: 'TF_VAR_pm_api_token'),
+                        string(credentialsId: 'ssh_auxilery_public_key', variable: 'TF_VAR_ssh_auxilery_public_key')
+                    ]){
+                        sh 'terraform init'
+                        sh '''
+                            terraform plan \
+                            -out=tfplan \
+                            -var-file=../common/global_variables.tfvars \
+                        '''
+                    }
                 }
             }
         }
@@ -100,11 +74,19 @@ pipeline {
         stage('[Terraform] Apply') {
             steps {
                 dir('homelab_terraform_configs/create_k3s_cluster') {
-                    sh '''
-                        terraform apply \
-                        -auto-approve tfplan \
-                        -var-file=../common/global_variables.tfvars \
-                    '''
+                    withCredentials([
+                        string(credentialsId: 'ci_username',             variable: 'TF_VAR_ci_username'),
+                        string(credentialsId: 'ci_password',             variable: 'TF_VAR_ci_password'),
+                        string(credentialsId: 'pm_api_endpoint',         variable: 'TF_VAR_pm_api_endpoint'),
+                        string(credentialsId: 'pm_api_token',            variable: 'TF_VAR_pm_api_token'),
+                        string(credentialsId: 'ssh_auxilery_public_key', variable: 'TF_VAR_ssh_auxilery_public_key')
+                    ]) {
+                        sh '''
+                            terraform apply \
+                            -auto-approve tfplan \
+                            -var-file=../common/global_variables.tfvars \
+                        '''
+                    }
                 }
             }
         }
