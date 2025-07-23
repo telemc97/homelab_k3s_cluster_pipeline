@@ -26,6 +26,19 @@ pipeline {
             }
         }
 
+        stage('Clean and Init Submodules') {
+            steps {
+                script {
+                    echo 'Cleaning any stale submodules and reinitializing...'
+                    sh '''
+                        git submodule deinit -f .
+                        rm -rf .git/modules/*
+                        git submodule update --init --recursive --force
+                    '''
+                }
+            }
+        }
+
         stage('Generate SSH Key Pair') {
             steps {
                 script {
