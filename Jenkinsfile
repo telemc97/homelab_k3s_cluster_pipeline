@@ -2,7 +2,7 @@ pipeline {
     agent { label 'control_node_agent0' }
 
     parameters {
-        string(name: 'CLEAN_WORKSPACE', defaultValue: 'false', description: 'Set to true to clean the workspace before build')
+        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace before build')
     }
 
     environment {
@@ -18,14 +18,14 @@ pipeline {
 
         stage('Pre-clean') {
             when {
-                expression { return params.CLEAN_WORKSPACE == 'true' }
+                expression { params.CLEAN_WORKSPACE }
             }
             steps {
                 echo 'Cleaning workspace...'
                 deleteDir()
             }
         }
-        
+
         stage('Generate SSH Key Pair') {
             steps {
                 script {
