@@ -16,16 +16,6 @@ pipeline {
 
     stages {
 
-        stage('Pre-clean') {
-            when {
-                expression { params.CLEAN_WORKSPACE }
-            }
-            steps {
-                echo 'Cleaning workspace...'
-                deleteDir()
-            }
-        }
-
         stage('Clean and Init Submodules') {
             steps {
                 dir("${env.WORKSPACE}") {
