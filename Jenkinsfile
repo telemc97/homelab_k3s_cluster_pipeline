@@ -84,7 +84,6 @@ pipeline {
                         sh '''
                             terraform apply \
                             -auto-approve tfplan \
-                            -var-file=../common/global_variables.tfvars \
                         '''
                     }
                 }
