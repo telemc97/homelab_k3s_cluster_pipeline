@@ -72,7 +72,6 @@ pipeline {
                         string(credentialsId: 'pm_api_endpoint',         variable: 'PM_API_ENDPOINT'),
                         string(credentialsId: 'pm_api_token',            variable: 'PM_API_TOKEN'),
                         string(credentialsId: 'ssh_auxilery_public_key', variable: 'AUX_SSH_PUBKEY'),
-                        string(credentialsId: 'ssh_ansible_public_key',  variable: 'ANSIBLE_SSH_PUBKEY')
                     ]) {
                         // Set them as real environment vars
                         env.TF_VAR_ci_username             = CI_USERNAME
@@ -80,7 +79,6 @@ pipeline {
                         env.TF_VAR_pm_api_endpoint         = PM_API_ENDPOINT
                         env.TF_VAR_pm_api_token            = PM_API_TOKEN
                         env.TF_VAR_ssh_auxilery_public_key = AUX_SSH_PUBKEY
-                        env.TF_VAR_ssh_ansible_public_key  = ANSIBLE_SSH_PUBKEY
                     }
                 }
             }
