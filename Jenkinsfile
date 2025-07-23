@@ -67,13 +67,20 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        string(credentialsId: 'ci_username', variable: 'TF_VAR_ci_username'),
-                        string(credentialsId: 'ci_password', variable: 'TF_VAR_ci_password'),
-                        string(credentialsId: 'pm_api_endpoint', variable: 'TF_VAR_pm_api_endpoint'),
-                        string(credentialsId: 'pm_api_token', variable: 'TF_VAR_pm_api_token'),
-                        string(credentialsId: 'ssh_auxilery_public_key', variable: 'TF_VAR_ssh_auxilery_public_key')
+                        string(credentialsId: 'ci_username',             variable: 'CI_USERNAME'),
+                        string(credentialsId: 'ci_password',             variable: 'CI_PASSWORD'),
+                        string(credentialsId: 'pm_api_endpoint',         variable: 'PM_API_ENDPOINT'),
+                        string(credentialsId: 'pm_api_token',            variable: 'PM_API_TOKEN'),
+                        string(credentialsId: 'ssh_auxilery_public_key', variable: 'AUX_SSH_PUBKEY'),
+                        string(credentialsId: 'ssh_ansible_public_key',  variable: 'ANSIBLE_SSH_PUBKEY')
                     ]) {
-                        echo "Terraform credentials set"
+                        // Set them as real environment vars
+                        env.TF_VAR_ci_username             = CI_USERNAME
+                        env.TF_VAR_ci_password             = CI_PASSWORD
+                        env.TF_VAR_pm_api_endpoint         = PM_API_ENDPOINT
+                        env.TF_VAR_pm_api_token            = PM_API_TOKEN
+                        env.TF_VAR_ssh_auxilery_public_key = AUX_SSH_PUBKEY
+                        env.TF_VAR_ssh_ansible_public_key  = ANSIBLE_SSH_PUBKEY
                     }
                 }
             }
