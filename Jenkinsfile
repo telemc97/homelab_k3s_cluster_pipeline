@@ -59,11 +59,12 @@ pipeline {
                         string(credentialsId: 'pm_api_endpoint',                   variable: 'TF_VAR_pm_api_endpoint'),
                         string(credentialsId: 'pm_api_token',                      variable: 'TF_VAR_pm_api_token'),
                         string(credentialsId: 'ssh_auxilery_public_key',           variable: 'TF_VAR_ssh_auxilery_public_key'),
-                        string(credentialsId: 'terraform_ssh_private_key',         variable: 'TF_VAR_terraform_ssh_private_key'),
-                        string(credentialsId: 'terraform_ssh_user',                variable: 'TF_VAR_terraform_ssh_user')
+                        string(credentialsId: 'terraform_ssh_user',                variable: 'TF_VAR_terraform_ssh_user'),
+                        string(credentialsId: 'terraform_ssh_private_key_file',    variable: 'SSH_KEY_FILE')
                     ]){
                         sh 'terraform init'
                         sh '''
+                            export TF_VAR_terraform_ssh_private_key="$(cat $SSH_KEY_FILE)" \
                             terraform plan \
                             -out=tfplan \
                             -var-file=../common/global_variables.tfvars \
@@ -82,10 +83,11 @@ pipeline {
                         string(credentialsId: 'pm_api_endpoint',                   variable: 'TF_VAR_pm_api_endpoint'),
                         string(credentialsId: 'pm_api_token',                      variable: 'TF_VAR_pm_api_token'),
                         string(credentialsId: 'ssh_auxilery_public_key',           variable: 'TF_VAR_ssh_auxilery_public_key'),
-                        string(credentialsId: 'terraform_ssh_private_key',         variable: 'TF_VAR_terraform_ssh_private_key'),
-                        string(credentialsId: 'terraform_ssh_user',                variable: 'TF_VAR_terraform_ssh_user')
+                        string(credentialsId: 'terraform_ssh_user',                variable: 'TF_VAR_terraform_ssh_user'),
+                        string(credentialsId: 'terraform_ssh_private_key_file',    variable: 'SSH_KEY_FILE')                        
                     ]) {
                         sh '''
+                            export TF_VAR_terraform_ssh_private_key="$(cat $SSH_KEY_FILE)" \
                             terraform apply \
                             -auto-approve tfplan \
                         '''
