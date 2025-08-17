@@ -59,7 +59,8 @@ pipeline {
                         string(credentialsId: 'pm_api_endpoint',                   variable: 'TF_VAR_pm_api_endpoint'),
                         string(credentialsId: 'pm_api_token',                      variable: 'TF_VAR_pm_api_token'),
                         string(credentialsId: 'ssh_auxilery_public_key',           variable: 'TF_VAR_ssh_auxilery_public_key'),
-                        string(credentialsId: 'terraform_private_key',             variable: 'TF_VAR_terraform_private_key')
+                        string(credentialsId: 'terraform_ssh_private_key',         variable: 'TF_VAR_terraform_ssh_private_key'),
+                        string(credentialsId: 'terraform_ssh_user',                variable: 'TF_VAR_terraform_ssh_user')
                     ]){
                         sh 'terraform init'
                         sh '''
@@ -81,7 +82,8 @@ pipeline {
                         string(credentialsId: 'pm_api_endpoint',                   variable: 'TF_VAR_pm_api_endpoint'),
                         string(credentialsId: 'pm_api_token',                      variable: 'TF_VAR_pm_api_token'),
                         string(credentialsId: 'ssh_auxilery_public_key',           variable: 'TF_VAR_ssh_auxilery_public_key'),
-                        string(credentialsId: 'terraform_private_key',             variable: 'TF_VAR_terraform_private_key')
+                        string(credentialsId: 'terraform_ssh_private_key',         variable: 'TF_VAR_terraform_ssh_private_key'),
+                        string(credentialsId: 'terraform_ssh_user',                variable: 'TF_VAR_terraform_ssh_user')
                     ]) {
                         sh '''
                             terraform apply \
