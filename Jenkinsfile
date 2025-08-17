@@ -64,7 +64,7 @@ pipeline {
                     ]){
                         sh 'terraform init'
                         sh '''
-                            export TF_VAR_terraform_ssh_private_key="$(cat $SSH_KEY_FILE)" \
+                            export TF_VAR_terraform_ssh_private_key="$(cat $SSH_KEY_FILE)"
                             terraform plan \
                             -out=tfplan \
                             -var-file=../common/global_variables.tfvars \
@@ -87,7 +87,7 @@ pipeline {
                         file(credentialsId: 'terraform_ssh_private_key_file',      variable: 'SSH_KEY_FILE'),
                     ]) {
                         sh '''
-                            export TF_VAR_terraform_ssh_private_key="$(cat $SSH_KEY_FILE)" \
+                            export TF_VAR_terraform_ssh_private_key="$(cat $SSH_KEY_FILE)"
                             terraform apply \
                             -auto-approve tfplan \
                         '''
