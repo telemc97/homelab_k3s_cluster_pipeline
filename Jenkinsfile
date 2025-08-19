@@ -2,7 +2,7 @@ pipeline {
     agent { label 'control_node_agent0' }
     
     parameters {
-        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean workspace before build')
+        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: false, description: 'Clean workspace before build')
     }
     
     stages {
@@ -34,7 +34,7 @@ pipeline {
         stage('Checkout Ansible Playbooks') {
             when {
                 expression {
-                    params.CLEAN_WORKSPACE || !fileExists('homelab_terraform_configs')
+                    params.CLEAN_WORKSPACE || !fileExists('homelab_ansible_playbooks')
                 }
             }
             steps {
