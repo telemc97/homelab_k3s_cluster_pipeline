@@ -1,9 +1,16 @@
 pipeline {
     agent { label 'control_node_agent0' }
-
+    
+    parameters {
+        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean workspace before build')
+    }
+    
     stages {
         
         stage('Cleanup Workspace') {
+            when {
+                expression { params.CLEAN_WORKSPACE }
+            }
             steps {
                 cleanWs()
             }
