@@ -2,6 +2,12 @@ pipeline {
     agent { label 'control_node_agent0' }
 
     stages {
+        
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
 
         stage('Checkout Terraform Configs') {
             steps {
