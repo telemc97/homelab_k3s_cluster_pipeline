@@ -10,18 +10,18 @@ pipeline {
         }
 
         stage('Checkout Terraform Configs') {
-            steps {
+            dir('homelab_terraform_configs') {
                 git branch: 'master',
-                url: 'https://gitea.tilhouse.duckdns.org/telemc/homelab_terraform_configs.git',
-                credentialsId: 'gitea_credentials'
+                    url: 'https://gitea.tilhouse.duckdns.org/telemc/homelab_terraform_configs.git',
+                    credentialsId: 'gitea_credentials'
             }
         }
 
         stage('Checkout Ansible Playbooks') {
-            steps {
+            dir('homelab_ansible_playbooks') {
                 git branch: 'master',
-                url: 'https://gitea.tilhouse.duckdns.org/telemc/homelab_ansible_playbooks.git',
-                credentialsId: 'gitea_credentials'
+                    url: 'https://gitea.tilhouse.duckdns.org/telemc/homelab_ansible_playbooks.git',
+                    credentialsId: 'gitea_credentials'
             }
         }
 
