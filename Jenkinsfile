@@ -17,6 +17,11 @@ pipeline {
         }
 
         stage('Checkout Terraform Configs') {
+            when {
+                expression {
+                    params.CLEAN_WORKSPACE || !fileExists('homelab_terraform_configs')
+                }
+            }
             steps {
                 dir('homelab_terraform_configs') {
                     git branch: 'master',
@@ -27,6 +32,11 @@ pipeline {
         }
 
         stage('Checkout Ansible Playbooks') {
+            when {
+                expression {
+                    params.CLEAN_WORKSPACE || !fileExists('homelab_terraform_configs')
+                }
+            }
             steps {
                 dir('homelab_ansible_playbooks') {
                     git branch: 'master',
