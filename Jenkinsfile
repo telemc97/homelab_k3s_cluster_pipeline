@@ -3,6 +3,32 @@ pipeline {
 
     stages {
 
+        stage('Checkout Terraform Configs') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/master']],
+                    userRemoteConfigs: [[
+                        url: 'https://gitea.tilhouse.duckdns.org/telemc/homelab_terraform_configs.git',
+                        credentialsId: 'gitea_credentials'
+                    ]]
+                ])
+            }
+        }
+
+        stage('Checkout Ansible Playbooks') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/master']],
+                    userRemoteConfigs: [[
+                        url: 'https://gitea.tilhouse.duckdns.org/telemc/homelab_ansible_playbooks.git',
+                        credentialsId: 'gitea_credentials'
+                    ]]
+                ])
+            }
+        }
+
         stage('Clean and Init Submodules') {
             steps {
                 dir("${env.WORKSPACE}") {
