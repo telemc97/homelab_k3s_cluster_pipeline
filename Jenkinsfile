@@ -29,26 +29,6 @@ pipeline {
             }
         }
 
-        stage('Clean and Init Submodules') {
-            steps {
-                dir("${env.WORKSPACE}") {
-                    script {
-                        echo 'Cleaning any stale submodules and reinitializing...'
-                        sh '''
-                            if [ -d .git ]; then
-                                git submodule deinit -f .
-                                rm -rf .git/modules/*
-                                git submodule update --init --recursive --force
-                            else
-                                echo "Not a git repository: skipping submodule commands"
-                                exit 1
-                            fi
-                        '''
-                    }
-                }
-            }
-        }
-
         stage('Generate SSH Key Pair') {
             steps {
                 script {
