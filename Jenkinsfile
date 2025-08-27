@@ -64,8 +64,7 @@ pipeline {
                     def privateKey = readFile(privateKeyPath).trim()
 
                     env.TF_VAR_ssh_ansible_public_key = publicKey
-                    env.ANSIBLE_PRIVATE_KEY = privateKey
-                    env.ANSIBLE_PRIVATE_KEY_PATH = privateKeyPath
+                    env.ANSIBLE_PRIVATE_KEY_FILE = privateKeyPath
 
                     // Secure file permission
                     sh "chmod 600 ${privateKeyPath}"
