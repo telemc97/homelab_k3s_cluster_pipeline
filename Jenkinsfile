@@ -100,10 +100,9 @@ pipeline {
                     withCredentials([
                         file(credentialsId: 'ansible_private_key', variable: 'ANSIBLE_PRIVATE_KEY_FILE'),
                     ]) {
-                        sh """
-                            ansible-playbook k3s_cluster/playbooks/setup_vms.yaml \
-                            --private-key "${keyPath}" \
-                        """
+                        sh '''
+                            ansible-playbook k3s_cluster/playbooks/setup_vms.yaml
+                        '''
                     }
                 }
             }
