@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'control_node_agent0' }
+    agent { label 'agent_0' }
     
     parameters {
         booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: false, description: 'Clean workspace before build')
